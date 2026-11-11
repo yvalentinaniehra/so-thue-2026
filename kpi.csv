@@ -12,3 +12,5 @@ date,channel,event,order_id,amount
 2026-11-11,facebook/reels,order_paid,SO-BMYCGO,399000
 2026-11-11,tiktok/bio,order_created,SO-BRJSZY,199000
 2026-11-11,tiktok/bio,order_paid,SO-BRJSZY,199000
+2026-11-12,tiktok/bio,page_view,,0
+2026-11-12,youtube/shorts,page_view,,0
