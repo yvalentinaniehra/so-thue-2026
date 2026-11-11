@@ -1,1 +1,10 @@
 date,channel,event,order_id,amount
+2026-11-11,tiktok/bio,page_view,,0
+2026-11-11,tiktok/bio,page_view,,0
+2026-11-11,tiktok/bio,click_buy,,199000
+2026-11-11,tiktok/bio,order_created,SO-BL926A,199000
+2026-11-11,tiktok/bio,order_paid,SO-BL926A,199000
+2026-11-11,facebook/reels,page_view,,0
+2026-11-11,facebook/reels,click_buy,,399000
+2026-11-11,facebook/reels,order_created,SO-BL9D94,399000
+2026-11-11,facebook/reels,order_paid,SO-BL9D94,399000
