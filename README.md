@@ -1,2 +1,6 @@
-# so-thue-2026
-Trang ban So thue ho kinh doanh 2026 + do luong funnel
+# Sổ thuế 2026 — funnel bán hàng
+Link bán: https://yvalentinaniehra.github.io/so-thue-2026/ · Link bio: https://yvalentinaniehra.github.io/so-thue-2026/link/ · (Xuất bản nội bộ bằng MausBot đang chặn vì chưa đăng nhập tài khoản MausBot, nên dùng GitHub Pages.)
+Điền số tài khoản nhận tiền: trong index.html, sửa CONFIG.bankId (mã ngân hàng, ví dụ 970436), CONFIG.accountNo, CONFIG.accountName — mã VietQR tĩnh sẽ tự hiện ở trang cảm ơn; hiện chưa điền nên trang hiện cảnh báo thay vì mã QR.
+Đọc số: kpi.csv có 6 cột date,channel,event,order_id,amount; event là một trong page_view / click_buy / order_created / order_paid; channel = utm_source/utm_medium (không có UTM thì ghi direct); amount là VND (gói 150 USD quy đổi 26.300đ/USD = 3.945.000đ, chỉ để thống kê).
+Vì GitHub Pages là trang tĩnh, mỗi sự kiện được trang gửi về điểm nhận https://webhook.site/d34024c0-f142-419a-aa62-b152e676628b; hằng ngày lấy log ở https://webhook.site/token/d34024c0-f142-419a-aa62-b152e676628b/requests rồi ghi thành dòng trong kpi.csv (đúng 4 mốc, kèm utm của đơn).
+Kiểm thử: 2 đơn test 199.000đ và 399.000đ chạy hết luồng đặt hàng → cảm ơn → “Tôi đã chuyển khoản”, mỗi đơn sinh đúng 1 dòng order_paid trong kpi.csv; mã nguồn: https://github.com/yvalentinaniehra/so-thue-2026
