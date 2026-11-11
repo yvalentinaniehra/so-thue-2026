@@ -285,7 +285,7 @@ footer a{color:var(--muted)}
       }).catch(function(){});
     } catch(e){}
   }
-  window.FUNNEL = { logEvent: logEvent, utm: UTM, config: CONFIG };
+  window.FUNNEL = { logEvent: logEvent, utm: UTM, config: CONFIG, setupZalo: setupZalo };
   logEvent("page_view");
 
   var form = document.getElementById("order-form");
