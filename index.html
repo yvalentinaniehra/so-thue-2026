@@ -370,6 +370,9 @@ footer a{color:var(--muted)}
     } else {
       qr.hidden = true;
       missing.hidden = false;
+      missing.textContent = zaloNumber()
+        ? "Chưa cài số tài khoản nhận tiền — chốt đơn qua Zalo bên dưới."
+        : "Đơn đã được ghi nhận. Chưa có số nhận đơn — chúng tôi sẽ liên hệ lại theo số bạn để lại.";
     }
     setupZalo(o);
     thanks.scrollIntoView({ behavior: "smooth", block: "start" });
