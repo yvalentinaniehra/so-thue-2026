@@ -74,6 +74,7 @@ footer a{color:var(--muted)}
 .check-panel .ck:first-of-type{border-top:0}
 .check-panel .ok{color:var(--accent);font-weight:600}
 .check-panel .no{color:#a11a1a;font-weight:600}
+.check-panel .ck-note{margin:8px 0 0;padding-top:6px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 .btn.zalo{background:#0068ff;color:#fff;margin-top:12px}
 .btn.zalo:hover{background:#0052cc}
 </style>
@@ -318,7 +319,7 @@ footer a{color:var(--muted)}
     panel.innerHTML = "<b>Tự kiểm tra cấu hình</b>" + CONFIG_FIELDS.map(function(k){
       var has = !isBlank(k);
       return '<div class="ck"><span>' + CONFIG_LABELS[k] + '</span><span class="' + (has ? "ok" : "no") + '">' + (has ? "đã có" : "còn trống") + "</span></div>";
-    }).join("");
+    }).join("") + '<p class="ck-note">Điền 4 giá trị này trong CONFIG của index.html: bankId, accountNo, accountName, zalo.</p>';
   })();
 
   function zaloNumber(){ return String(CONFIG.zalo || "").replace(/[^0-9]/g, ""); }
