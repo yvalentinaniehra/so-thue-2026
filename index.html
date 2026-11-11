@@ -66,6 +66,15 @@ input:focus,textarea:focus{outline:2px solid #bfe0d5;outline-offset:1px;border-c
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px;background:#fff}
 footer a{color:var(--muted)}
 @media (max-width:720px){h1{font-size:27px}.grid-2,.grid-3,.pkg-pick{grid-template-columns:1fr}.hero{padding-top:30px}section{padding:28px 0}.nav a{margin-left:12px}}
+.config-note{font-size:13px;color:var(--warn);background:var(--warn-bg);border:1px solid #f0dcb8;border-radius:8px;padding:8px 12px;margin:16px 0 0}
+.check-panel{border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:14px 0 0;font-size:13px;color:var(--muted);background:#fff}
+.check-panel b{color:var(--ink);font-weight:700}
+.check-panel .ck{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:4px 0}
+.check-panel .ck:first-of-type{border-top:0}
+.check-panel .ok{color:var(--accent);font-weight:600}
+.check-panel .no{color:#a11a1a;font-weight:600}
+.btn.zalo{background:#0068ff;color:#fff;margin-top:12px}
+.btn.zalo:hover{background:#0052cc}
 </style>
 </head>
 <body>
@@ -77,6 +86,10 @@ footer a{color:var(--muted)}
 </header>
 
 <main>
+<div class="wrap">
+  <div class="check-panel" id="check-panel" hidden></div>
+  <div class="config-note" id="config-note" hidden></div>
+</div>
 <div class="wrap hero">
   <span class="eyebrow">Hộ kinh doanh · nộp thuế khoán và kê khai</span>
   <h1>Điền doanh thu mỗi tháng, sổ tự ra số thuế phải nộp</h1>
@@ -160,12 +173,14 @@ footer a{color:var(--muted)}
       <p style="margin:0 0 4px"><span id="thanks-package"></span> — <strong id="thanks-amount" data-testid="order-amount"></strong></p>
       <div class="qr-box">
         <img id="qr" alt="Mã VietQR để chuyển khoản đúng số tiền và mã đơn" hidden>
-        <p class="warn" id="qr-missing" hidden>Chưa cài số tài khoản nhận tiền trên trang. Người bán điền <code>bankId</code>, <code>accountNo</code>, <code>accountName</code> ở phần cấu hình trong <code>index.html</code> (xem README) là mã QR hiện ra.</p>
+        <p class="warn" id="qr-missing" hidden>Chưa cài số tài khoản nhận tiền — chốt đơn qua Zalo bên dưới.</p>
         <p class="bank" id="bank-line"></p>
       </div>
       <p class="small" style="margin:0 0 14px">Nội dung chuyển khoản: <strong>mã đơn ở trên</strong> — để ghép đúng đơn của bạn.</p>
       <button class="btn primary" id="paid-btn" type="button">Tôi đã chuyển khoản</button>
       <p class="small" id="paid-note" style="margin:10px 0 0"></p>
+      <a class="btn zalo" id="zalo-btn" href="#" target="_blank" rel="noopener" hidden>Nhắn Zalo chốt đơn</a>
+      <p class="small" id="zalo-msg" style="margin:8px 0 0" hidden></p>
     </section>
   </div>
 </section>
@@ -207,6 +222,7 @@ footer a{color:var(--muted)}
     bankId: "",
     accountNo: "",
     accountName: "",
+    zalo: "",
     usdVnd: 26300,
     prices: { p199: 199000, p399: 399000, usd: 150 }
   };
@@ -277,6 +293,54 @@ footer a{color:var(--muted)}
   var errorEl = document.getElementById("form-error");
   var currentOrder = null;
 
+  var CONFIG_FIELDS = ["bankId","accountNo","accountName","zalo"];
+  var CONFIG_LABELS = {
+    bankId: "bankId — mã ngân hàng",
+    accountNo: "accountNo — số tài khoản",
+    accountName: "accountName — tên chủ tài khoản",
+    zalo: "zalo — số nhận đơn"
+  };
+  function isBlank(k){ return String(CONFIG[k] || "").trim() === ""; }
+
+  (function configState(){
+    var missing = CONFIG_FIELDS.filter(isBlank);
+    var note = document.getElementById("config-note");
+    if (note && missing.length) {
+      note.hidden = false;
+      note.textContent = "Thiếu cấu hình: " + missing.join(", ") + " — trang vẫn nhận đơn qua Zalo.";
+    }
+    var panel = document.getElementById("check-panel");
+    if (!panel) return;
+    var params = new URLSearchParams(location.search);
+    if (params.get("check") !== "1") return;
+    panel.hidden = false;
+    panel.innerHTML = "<b>Tự kiểm tra cấu hình</b>" + CONFIG_FIELDS.map(function(k){
+      var has = !isBlank(k);
+      return '<div class="ck"><span>' + CONFIG_LABELS[k] + '</span><span class="' + (has ? "ok" : "no") + '">' + (has ? "đã có" : "còn trống") + "</span></div>";
+    }).join("");
+  })();
+
+  function zaloNumber(){ return String(CONFIG.zalo || "").replace(/[^0-9]/g, ""); }
+  function zaloText(o){
+    var label = o.package === "p399" ? "Gói Đầy đủ 399.000đ" : "Gói Cơ bản 199.000đ";
+    return "Đơn " + o.id + " — " + label + " — " + money(o.amount) + ". Mình đã chuyển khoản, nhờ gửi file.";
+  }
+  function setupZalo(o){
+    var btn = document.getElementById("zalo-btn");
+    var msg = document.getElementById("zalo-msg");
+    if (!btn) return;
+    var num = zaloNumber();
+    if (!num) { btn.hidden = true; if (msg) msg.hidden = true; return; }
+    var text = zaloText(o);
+    btn.href = "https://zalo.me/" + num;
+    btn.dataset.text = text;
+    btn.hidden = false;
+    if (msg) { msg.hidden = false; msg.textContent = "Nội dung kèm sẵn: " + text; }
+    btn.onclick = function(){
+      try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text); } catch(e){}
+    };
+  }
+
   function showError(msg){ errorEl.textContent = msg || ""; errorEl.hidden = !msg; }
 
   function choosePackage(pkg){
@@ -306,6 +370,7 @@ footer a{color:var(--muted)}
       qr.hidden = true;
       missing.hidden = false;
     }
+    setupZalo(o);
     thanks.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
