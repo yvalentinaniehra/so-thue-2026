@@ -403,7 +403,7 @@ footer a{color:var(--muted)}
     logEvent("order_paid", { order_id: currentOrder.id, amount: currentOrder.amount, package: currentOrder.package });
     this.disabled = true;
     this.textContent = "Đã ghi nhận — chờ gửi file";
-    document.getElementById("paid-note").textContent = "Đã ghi nhận đơn " + currentOrder.id + ". File gửi qua Zalo trong 15 phút.";
+    document.getElementById("paid-note").textContent = "Đã ghi nhận đơn " + currentOrder.id + (zaloNumber() ? ". File gửi qua Zalo trong 15 phút." : ". Chúng tôi sẽ liên hệ lại theo số bạn để lại trong 24 giờ.");
   });
 
   var leadForm = document.getElementById("lead-form");
