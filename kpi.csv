@@ -8,3 +8,5 @@ date,channel,event,order_id,amount
 2026-11-11,facebook/reels,click_buy,,399000
 2026-11-11,facebook/reels,order_created,SO-BL9D94,399000
 2026-11-11,facebook/reels,order_paid,SO-BL9D94,399000
+2026-11-11,facebook/reels,order_created,SO-BMYCGO,399000
+2026-11-11,facebook/reels,order_paid,SO-BMYCGO,399000
