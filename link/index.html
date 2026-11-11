@@ -40,5 +40,12 @@ div.chan.off{background:#f4f0ea;color:#8a837a;cursor:default;font-weight:500}
 
   <p class="foot">Thay link trong <code>link/index.html</code> khi có trang kênh thật.</p>
 </main>
+<script>(function(){
+  var p = new URLSearchParams(location.search), o = new URLSearchParams();
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){ if (p.get(k)) o.set(k, p.get(k)); });
+  if (!o.toString()) return; // không có utm: giữ nguyên bio/link mặc định
+  var a = document.querySelector('a[data-testid="sales-link"]');
+  if (a) a.href = "../?" + o.toString();
+})();</script>
 </body>
 </html>
