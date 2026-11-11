@@ -1,0 +1,29 @@
+name: Sync KPI CSV from Collector
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch latest KPI CSV from collector endpoint
+        run: |
+          curl -fsSL "https://oztetrbtiowuihmudywj.supabase.co/functions/v1/so-thue-collector" -o kpi.csv.tmp
+          head -n 1 kpi.csv.tmp | grep -q "^date,channel,event,order_id,amount"
+          mv kpi.csv.tmp kpi.csv
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet kpi.csv; then
+            git add kpi.csv
+            git commit -m "chore(kpi): auto-sync kpi.csv from collector endpoint"
+            git push
+          fi
